@@ -14,7 +14,7 @@ This project processes an image of scattered coins, flattens the colors to remov
 ```text
 Loading image...
 Background base color: C(255, 255, 255)
-Finding islands using DFS...
+Finding islands using BFS...
 
 Found 64 total coins.
 Grouped into 5 coin denominations:
@@ -30,7 +30,7 @@ Grouped into 5 coin denominations:
 The program has already been compiled into `.exe` files in the [executables folder](executables).
 
 1. Open the [executables folder](executables).
-2. Double-click `ColorReducer.exe`. This will read the original `coins.jpeg` image and output a clean `coins_flattened.png` image with exactly two colors.
+2. Double-click `ColorReducer.exe`. This will read the original `coins.jpeg` image and output a clean `coins_flattened.png` image with red coins on a white background.
 3. Next, open a terminal inside the [executables folder](executables) and run `IslandCounter.exe`. This will read the new `coins_flattened.png`, count all the coins, group them into the 5 sizes, and print the results to the screen!
 
 ## How it Works
@@ -38,9 +38,9 @@ The program has already been compiled into `.exe` files in the [executables fold
 The process is split into two main steps:
 
 ### 1. Color Reducer
-First, I needed to clean up the image so it's easier to process. The program applies a thresholding algorithm (binarization) to convert the image straight to black and white.
+First, I needed to clean up the image so it's easier to process. The program applies a thresholding algorithm to convert the image into two distinct colors (white background and red coins).
 
-The `ColorReducer` script goes through every single pixel in the original image, calculates its luminance (brightness), and changes it to pure white (`#FFFFFF`) if it's bright enough (background), or pure black (`#000000`) if it's darker (coins). To fix any tiny "noise" holes inside the coins caused by reflections, each background pixel touching a black coin pixel is turned into a black coin pixel. It then saves the result as a PNG file so we don't get any new compression artifacts.
+The `ColorReducer` script goes through every single pixel in the original image, calculates its luminance (brightness), and changes it to pure white (`#FFFFFF`) if it's bright enough (background), or pure red (`#FF0000`) if it's darker (coins). To fix any tiny "noise" holes inside the coins caused by reflections, each background pixel touching a red coin pixel is turned into a red coin pixel. It then saves the result as a PNG file so we don't get any new compression artifacts.
 
 ## Before and After Flattening Process
 
@@ -49,7 +49,7 @@ The `ColorReducer` script goes through every single pixel in the original image,
 | <img src="coins.jpeg" width="400" /> | <img src="coins_flattened.png" width="400" /> |
 
 ### 2. Island Counter
-Next, the program scans the clean image using a **Depth-First Search** algorithm to count the "islands" (the coins). 
+Next, the program scans the clean image using a **Breadth-First Search** (BFS) algorithm to count the "islands" (the coins). 
 - It skips any islands smaller than 1000 pixels since those are just dust or noise.
 - Once it calculates the pixel areas of all the valid coins, it sorts them by size.
 - Since we know there are exactly 5 coin denominations (5 Cent, 10 Cent, 25 Cent, 1 Peso, 5 Peso), the algorithm calculates the differences in size between the sorted coins. It automatically finds the 4 largest size gaps (natural breaks) and uses those as the split points to perfectly group the coins.

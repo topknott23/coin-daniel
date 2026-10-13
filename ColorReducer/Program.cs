@@ -21,7 +21,7 @@ namespace ColorReducer
                         Color pixel = bitmap.GetPixel(x, y);
                         // Convert to grayscale and threshold
                         int brightness = (int)(pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
-                        pixels[x, y] = brightness > 150 ? Color.White : Color.Black;
+                        pixels[x, y] = brightness > 150 ? Color.White : Color.Red;
                     }
                 }
 
@@ -36,25 +36,25 @@ namespace ColorReducer
                         Color current = pixels[x, y];
                         newPixels[x, y] = current;
                         
-                        if (current == Color.White) // check if adjacent to black
+                        if (current == Color.White) // check if adjacent to red
                         {
-                            bool adjacentToBlack = false;
+                            bool adjacentToCoin = false;
                             for (int i = 0; i < 8; i++)
                             {
                                 int nx = x + dx[i];
                                 int ny = y + dy[i];
                                 if (nx >= 0 && nx < bitmap.Width && ny >= 0 && ny < bitmap.Height)
                                 {
-                                    if (pixels[nx, ny] == Color.Black)
+                                    if (pixels[nx, ny] == Color.Red)
                                     {
-                                        adjacentToBlack = true;
+                                        adjacentToCoin = true;
                                         break;
                                     }
                                 }
                             }
-                            if (adjacentToBlack)
+                            if (adjacentToCoin)
                             {
-                                newPixels[x, y] = Color.Black;
+                                newPixels[x, y] = Color.Red;
                             }
                         }
                     }
@@ -71,14 +71,6 @@ namespace ColorReducer
                 bitmap.Save(outputPath, ImageFormat.Png);
                 Console.WriteLine("Processing complete. Output saved to " + outputPath);
             }
-        }
-
-        static int DistanceSq(Color a, Color b)
-        {
-            int dr = a.R - b.R;
-            int dg = a.G - b.G;
-            int db = a.B - b.B;
-            return dr * dr + dg * dg + db * db;
         }
     }
 }
